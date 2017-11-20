@@ -107,6 +107,21 @@ void ParticleFilter::updateWeights(double sensor_range, double std_landmark[],
 	//   and the following is a good resource for the actual equation to implement (look at equation 
 	//   3.33
 	//   http://planning.cs.uiuc.edu/node99.html
+
+//for loop for just 1
+	//1. Come up with a set of predicted observations for each particle (in the MAP coordinates)
+
+	//2. Transform actual observations into MAP coordinates (based on each individual particle's position? :( )
+
+//3 and 4 are in for loop together
+	//3. Feed those predicted observations and actual observations to the dataAssociation function
+	//		Need to establish linkage between index of predicted measurement and index of actual measurement 
+
+	//4. Update the weights 
+	//		a. Calculate multivariate Gaussian Probability associated with each observation (based on its linked landmark)
+	//		b. take product of all of the probabilities for that particle's weight 
+
+	//5. Normalize the weights of all particles? 
 }
 
 void ParticleFilter::resample() {
