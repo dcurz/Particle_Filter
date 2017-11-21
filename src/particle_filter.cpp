@@ -87,12 +87,31 @@ void ParticleFilter::prediction(double delta_t, double std_pos[], double velocit
 	}
 }
 
-void ParticleFilter::dataAssociation(std::vector<LandmarkObs> predicted, std::vector<LandmarkObs>& observations) {
+int ParticleFilter::dataAssociation(std::vector<LandmarkObs> predicted, <LandmarkObs>& observation) {
 	// TODO: Find the predicted measurement that is closest to each observed measurement and assign the 
 	//   observed measurement to this particular landmark.
 	// NOTE: this method will NOT be called by the grading code. But you will probably find it useful to 
 	//   implement this method and use it as a helper during the updateWeights phase.
 
+	// Run through transformed actual observations and assign to closest predicted observation (aka map landmark)
+	// Do something clever with a for loop where you just keep track of lowest distance (call that helper function)
+	// and the id associated with it - and update if you get a better one.
+	double currMinDist = 50.0;
+	int minDistIndex = len(observations) + 1; 
+
+	//for the given observation check it against every landmark in the map. "Predicted" is just the vector of map landmarks
+	for (int j = 0; j<len(predicted); j++){
+		
+		double theDist = dist(predicted[j].x, predicted[j].y, observations[i].x, observations[i].y)
+		
+		if (theDist<currMinDist){
+			currMinDist = theDist;
+			minDistIndex = j; 
+		}
+	}
+	//return the index of the closest map measurement 
+	return minDistIndex;	
+	}
 }
 
 void ParticleFilter::updateWeights(double sensor_range, double std_landmark[], 
@@ -108,17 +127,58 @@ void ParticleFilter::updateWeights(double sensor_range, double std_landmark[],
 	//   3.33
 	//   http://planning.cs.uiuc.edu/node99.html
 
-//for loop for just 1
-	//1. Come up with a set of predicted observations for each particle (in the MAP coordinates)
 
+	//1. Come up with a set of predicted observations for each particle (in the MAP coordinates) - wait, isn't this just the landmarks straight up? 
+
+//for loop for  2,3,4
 	//2. Transform actual observations into MAP coordinates (based on each individual particle's position? :( )
+	//***SHould the Theta be negative . . . ???
+	
+	//cycle through every particle
+	for(int i = 0; i < num_particles; i++){
+		
+		//unpack particle locations for readability	
+		double x = particles[i].x;
+		double y = particles[i].y;
+		double theta = particles[i].theta;
 
-//3 and 4 are in for loop together
-	//3. Feed those predicted observations and actual observations to the dataAssociation function
-	//		Need to establish linkage between index of predicted measurement and index of actual measurement 
+		//create vector of observations to store translated observations
+		std::vector<LandmarkObs> mapCoordObs(len(observations));
+
+		//cycle through every observation  
+		for(int j = 0; j < len(mapCoordObs); j++){
+			//transform from car (particle) coords to map coords **MAY STILL NEED NEGATED
+			mapCoordObs[j].x = observations[j].x*cos(theta) - observations[j].y*sin(theta) + x; 
+			mapCoordObs[j].y = observations[j].x*sin(theta) + observations[j].y*cos(theta) + y;
+			//perform nearest neighbor association
+			mapCoordObs[j].id = dataAssociation(map_landmarks, mapCoordObs[j]);
+		
+			//rename for clarity
+			double sig_x = std_landmark[0];
+			double sig_y = std_landmark[1]; 
+			int k = mapCoordObs[j].id; 
+			double x_obs = mapCoordObs[j].x;
+			double y_obs = mapCoordObs[j].y;
+			double mu_x = map_landmarks[k].x;
+			double mu_y = map_landmarks[k].y;
+
+			double gauss_norm = (1/(2*M_PI*sig_x*sig_y));
+			double exponent = ((x_obs - mu_x)*(x_obs - mu_x))/(2*(sig_x*sig_x))+((y_obs - mu_y)*(y_obs - mu_y))/(2*(sig_y*sig_y));
+		
+			double thisObsWeight = gauss_norm * exp(-exponent);
+
+			particles[i].weight *= thisObsWeight;
+		}
+
+
 
 	//4. Update the weights 
 	//		a. Calculate multivariate Gaussian Probability associated with each observation (based on its linked landmark)
+		
+
+
+
+
 	//		b. take product of all of the probabilities for that particle's weight 
 
 	//5. Normalize the weights of all particles? 
