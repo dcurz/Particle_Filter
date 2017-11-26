@@ -78,7 +78,7 @@ void ParticleFilter::prediction(double delta_t, double std_pos[], double velocit
 		double theta = particles[i].theta;
 
 		//prevent divide by 0 issues
-		if(theta_d < .001;){theta_d = .001;}
+		if(theta_d < .001){theta_d = .001;}
 
 		//motion model including addition of random measurement noise
 		particles[i].x = x + (v/theta_d)*(sin(theta + (theta_d*dt))-sin(theta)) + dist_x(gen);
@@ -87,7 +87,7 @@ void ParticleFilter::prediction(double delta_t, double std_pos[], double velocit
 	}
 }
 
-int ParticleFilter::dataAssociation(std::vector<LandmarkObs> predicted, <LandmarkObs>& observation) {
+int ParticleFilter::dataAssociation(std::vector<LandmarkObs> predicted, LandmarkObs& observation) {
 	// TODO: Find the predicted measurement that is closest to each observed measurement and assign the 
 	//   observed measurement to this particular landmark.
 	// NOTE: this method will NOT be called by the grading code. But you will probably find it useful to 
@@ -112,7 +112,7 @@ int ParticleFilter::dataAssociation(std::vector<LandmarkObs> predicted, <Landmar
 	//return the index of the closest map measurement 
 	return minDistIndex;	
 	}
-}
+
 
 void ParticleFilter::updateWeights(double sensor_range, double std_landmark[], 
 		const std::vector<LandmarkObs> &observations, const Map &map_landmarks) {
