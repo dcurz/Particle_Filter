@@ -97,12 +97,12 @@ int ParticleFilter::dataAssociation(std::vector<LandmarkObs> predicted, Landmark
 	// Do something clever with a for loop where you just keep track of lowest distance (call that helper function)
 	// and the id associated with it - and update if you get a better one.
 	double currMinDist = 50.0;
-	int minDistIndex = len(observations) + 1; 
+	int minDistIndex = predicted.size() + 1; 
 
 	//for the given observation check it against every landmark in the map. "Predicted" is just the vector of map landmarks
-	for (int j = 0; j<len(predicted); j++){
+	for (int j = 0; j<predicted.size(); j++){
 		
-		double theDist = dist(predicted[j].x, predicted[j].y, observations[i].x, observations[i].y)
+		double theDist = dist(predicted[j].x, predicted[j].y, observation.x, observation.y);
 		
 		if (theDist<currMinDist){
 			currMinDist = theDist;
@@ -149,7 +149,7 @@ void ParticleFilter::updateWeights(double sensor_range, double std_landmark[],
 		std::vector<LandmarkObs> mapCoordObs(observations.size());
 
 		//cycle through every observation  
-		for(int j = 0; j < len(mapCoordObs); j++){
+		for(int j = 0; j < mapCoordObs.size(); j++){
 			//transform from car (particle) coords to map coords **MAY STILL NEED NEGATED
 			mapCoordObs[j].x = observations[j].x*cos(theta) - observations[j].y*sin(theta) + x; 
 			mapCoordObs[j].y = observations[j].x*sin(theta) + observations[j].y*cos(theta) + y;
@@ -162,8 +162,8 @@ void ParticleFilter::updateWeights(double sensor_range, double std_landmark[],
 			int k = mapCoordObs[j].id; 
 			double x_obs = mapCoordObs[j].x;
 			double y_obs = mapCoordObs[j].y;
-			double mu_x = map.landmark_list[k].x_f;
-			double mu_y = map_landmark_list[k].y_f;
+			double mu_x = map_landmarks.landmark_list[k].x_f;
+			double mu_y = map_landmarks.landmark_list[k].y_f;
 
 			//use each individual observation to update the particle's weight
 			double gauss_norm = (1/(2*M_PI*sig_x*sig_y));
@@ -193,7 +193,7 @@ void ParticleFilter::resample() {
 	//   http://en.cppreference.com/w/cpp/numeric/random/discrete_distribution
 
 	//Create list to hold weights
-	double allTheWeightsList {}; 
+	list<double> allTheWeightsList; 
 
 	//populte list with weights
 	for (int n = 0; n<particles.size(); n++){
