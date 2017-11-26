@@ -136,6 +136,9 @@ void ParticleFilter::updateWeights(double sensor_range, double std_landmark[],
 	
 	//cycle through every particle
 	for(int i = 0; i < num_particles; i++){
+
+		//reset particle weight to one since we use a *= to update it later
+		particles[i].weight = 1; 
 		
 		//unpack particle locations for readability	
 		double x = particles[i].x;
@@ -162,6 +165,7 @@ void ParticleFilter::updateWeights(double sensor_range, double std_landmark[],
 			double mu_x = map_landmarks[k].x;
 			double mu_y = map_landmarks[k].y;
 
+			//use each individual observation to update the particle's weight
 			double gauss_norm = (1/(2*M_PI*sig_x*sig_y));
 			double exponent = ((x_obs - mu_x)*(x_obs - mu_x))/(2*(sig_x*sig_x))+((y_obs - mu_y)*(y_obs - mu_y))/(2*(sig_y*sig_y));
 		
@@ -169,25 +173,44 @@ void ParticleFilter::updateWeights(double sensor_range, double std_landmark[],
 
 			particles[i].weight *= thisObsWeight;
 		}
+	}
 
+	//Normalize weight of every particle
+	double weightsSum = 0.0; 
 
+	for(int k = 0; k<len(particles); k++){
+		weightsSum+=particles[k].weight;
+	}	
 
-	//4. Update the weights 
-	//		a. Calculate multivariate Gaussian Probability associated with each observation (based on its linked landmark)
-		
-
-
-
-
-	//		b. take product of all of the probabilities for that particle's weight 
-
-	//5. Normalize the weights of all particles? 
+	for(int m = 0; m<len(particles); m++){
+		particles[k].weight /= weightsSum;
+	}
 }
 
 void ParticleFilter::resample() {
 	// TODO: Resample particles with replacement with probability proportional to their weight. 
 	// NOTE: You may find std::discrete_distribution helpful here.
 	//   http://en.cppreference.com/w/cpp/numeric/random/discrete_distribution
+
+	//Create list to hold weights
+	list<double> allTheWeightsList; 
+
+	//populte list with weights
+	for (int n = 0; n<len(particles); n++){
+		allTheWeightsList.push_back(particles[n].weight);
+	}
+
+	//resample according to weights
+	random_device rd; 
+	mt19937 gen(rd());
+	discrete_distribution<> d(allTheWeightsList);
+
+	for (int p = 0; p<len(particles); p++){
+		int resampleID = d(gen);
+		particles[p].x = particles[resampleID].x;
+		particles[p].y = particles[resampleID].y;
+		particles[p].theta = particles[resampleID].theta;
+	}
 
 }
 
