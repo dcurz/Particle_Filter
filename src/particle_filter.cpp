@@ -102,7 +102,7 @@ int ParticleFilter::dataAssociation(std::vector<Map::single_landmark_s> predicte
 	//for the given observation check it against every landmark in the map. "Predicted" is just the vector of map landmarks
 	for (int j = 0; j<predicted.size(); j++){
 		
-		double theDist = dist(predicted[j].x, predicted[j].y, observation.x, observation.y);
+		double theDist = dist(predicted[j].x_f, predicted[j].y_f observation.x, observation.y);
 		
 		if (theDist<currMinDist){
 			currMinDist = theDist;
@@ -197,7 +197,7 @@ void ParticleFilter::resample() {
 
 	//populte list with weights
 	for (int n = 0; n<particles.size(); n++){
-		allTheWeightsList.push_back(particles[n].weight);
+		allTheWeightsList.append({particles[n].weight});
 	}
 
 	//resample according to weights
