@@ -193,7 +193,7 @@ void ParticleFilter::resample() {
 	//   http://en.cppreference.com/w/cpp/numeric/random/discrete_distribution
 
 	//Create list to hold weights
-	vector<double> allTheWeightsList; 
+	ititializer_list<double> allTheWeightsList; 
 
 	//populte list with weights
 	for (int n = 0; n<particles.size(); n++){
