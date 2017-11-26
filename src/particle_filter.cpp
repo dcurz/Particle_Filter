@@ -154,7 +154,7 @@ void ParticleFilter::updateWeights(double sensor_range, double std_landmark[],
 			mapCoordObs[j].x = observations[j].x*cos(theta) - observations[j].y*sin(theta) + x; 
 			mapCoordObs[j].y = observations[j].x*sin(theta) + observations[j].y*cos(theta) + y;
 			//perform nearest neighbor association
-			mapCoordObs[j].id = dataAssociation(map_landmarks, mapCoordObs[j]);
+			mapCoordObs[j].id = dataAssociation(map_landmarks.landmark_list, mapCoordObs[j]);
 		
 			//rename for clarity
 			double sig_x = std_landmark[0];
@@ -193,7 +193,7 @@ void ParticleFilter::resample() {
 	//   http://en.cppreference.com/w/cpp/numeric/random/discrete_distribution
 
 	//Create list to hold weights
-	list<double> allTheWeightsList; 
+	vector<double> allTheWeightsList; 
 
 	//populte list with weights
 	for (int n = 0; n<particles.size(); n++){
