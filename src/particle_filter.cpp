@@ -87,7 +87,7 @@ void ParticleFilter::prediction(double delta_t, double std_pos[], double velocit
 	}
 }
 
-int ParticleFilter::dataAssociation(std::vector<LandmarkObs> predicted, LandmarkObs& observation) {
+int ParticleFilter::dataAssociation(std::vector<Map::single_landmark_s> predicted, LandmarkObs& observation) {
 	// TODO: Find the predicted measurement that is closest to each observed measurement and assign the 
 	//   observed measurement to this particular landmark.
 	// NOTE: this method will NOT be called by the grading code. But you will probably find it useful to 
@@ -193,7 +193,7 @@ void ParticleFilter::resample() {
 	//   http://en.cppreference.com/w/cpp/numeric/random/discrete_distribution
 
 	//Create list to hold weights
-	ititializer_list<double> allTheWeightsList; 
+	initializer_list<double> allTheWeightsList; 
 
 	//populte list with weights
 	for (int n = 0; n<particles.size(); n++){
