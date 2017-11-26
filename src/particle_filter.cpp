@@ -146,7 +146,7 @@ void ParticleFilter::updateWeights(double sensor_range, double std_landmark[],
 		double theta = particles[i].theta;
 
 		//create vector of observations to store translated observations
-		std::vector<LandmarkObs> mapCoordObs(len(observations));
+		std::vector<LandmarkObs> mapCoordObs(observations.size());
 
 		//cycle through every observation  
 		for(int j = 0; j < len(mapCoordObs); j++){
@@ -162,8 +162,8 @@ void ParticleFilter::updateWeights(double sensor_range, double std_landmark[],
 			int k = mapCoordObs[j].id; 
 			double x_obs = mapCoordObs[j].x;
 			double y_obs = mapCoordObs[j].y;
-			double mu_x = map_landmarks[k].x;
-			double mu_y = map_landmarks[k].y;
+			double mu_x = map.landmark_list[k].x_f;
+			double mu_y = map_landmark_list[k].y_f;
 
 			//use each individual observation to update the particle's weight
 			double gauss_norm = (1/(2*M_PI*sig_x*sig_y));
@@ -178,12 +178,12 @@ void ParticleFilter::updateWeights(double sensor_range, double std_landmark[],
 	//Normalize weight of every particle
 	double weightsSum = 0.0; 
 
-	for(int k = 0; k<len(particles); k++){
+	for(int k = 0; k<particles.size(); k++){
 		weightsSum+=particles[k].weight;
 	}	
 
-	for(int m = 0; m<len(particles); m++){
-		particles[k].weight /= weightsSum;
+	for(int m = 0; m<particles.size(); m++){
+		particles[m].weight /= weightsSum;
 	}
 }
 
@@ -193,10 +193,10 @@ void ParticleFilter::resample() {
 	//   http://en.cppreference.com/w/cpp/numeric/random/discrete_distribution
 
 	//Create list to hold weights
-	list<double> allTheWeightsList; 
+	double allTheWeightsList {}; 
 
 	//populte list with weights
-	for (int n = 0; n<len(particles); n++){
+	for (int n = 0; n<particles.size(); n++){
 		allTheWeightsList.push_back(particles[n].weight);
 	}
 
@@ -205,7 +205,7 @@ void ParticleFilter::resample() {
 	mt19937 gen(rd());
 	discrete_distribution<> d(allTheWeightsList);
 
-	for (int p = 0; p<len(particles); p++){
+	for (int p = 0; p<particles.size(); p++){
 		int resampleID = d(gen);
 		particles[p].x = particles[resampleID].x;
 		particles[p].y = particles[resampleID].y;
