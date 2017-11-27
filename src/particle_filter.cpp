@@ -26,7 +26,7 @@ void ParticleFilter::init(double x, double y, double theta, double std[]) {
 	// NOTE: Consult particle_filter.h for more information about this method (and others in this file).
 
 	//Set the number of particles
-	num_particles = 1250;
+	num_particles = 1750;
 
 	//Will need this generator for addition of Gaussian noise in particle initialization
 	default_random_engine gen;
