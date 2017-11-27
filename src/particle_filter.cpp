@@ -102,7 +102,7 @@ int ParticleFilter::dataAssociation(std::vector<Map::single_landmark_s> predicte
 	//for the given observation check it against every landmark in the map. "Predicted" is just the vector of map landmarks
 	for (int j = 0; j<predicted.size(); j++){
 		
-		double theDist = dist(predicted[j].x_f, predicted[j].y_f observation.x, observation.y);
+		double theDist = dist(predicted[j].x_f, predicted[j].y_f, observation.x, observation.y);
 		
 		if (theDist<currMinDist){
 			currMinDist = theDist;
@@ -193,17 +193,17 @@ void ParticleFilter::resample() {
 	//   http://en.cppreference.com/w/cpp/numeric/random/discrete_distribution
 
 	//Create list to hold weights
-	initializer_list<double> allTheWeightsList; 
+	vector<double> allTheWeightsList; 
 
 	//populte list with weights
 	for (int n = 0; n<particles.size(); n++){
-		allTheWeightsList.append({particles[n].weight});
+		allTheWeightsList.push_back(particles[n].weight);
 	}
 
 	//resample according to weights
 	random_device rd; 
 	mt19937 gen(rd());
-	discrete_distribution<> d(allTheWeightsList);
+	discrete_distribution<> d(allTheWeightsList.begin(), allTheWeightsList.end());
 
 	for (int p = 0; p<particles.size(); p++){
 		int resampleID = d(gen);
