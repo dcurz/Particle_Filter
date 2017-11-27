@@ -78,7 +78,7 @@ void ParticleFilter::prediction(double delta_t, double std_pos[], double velocit
 		double theta = particles[i].theta;
 
 		//prevent divide by 0 issues
-		if(theta_d < .001){theta_d = .001;}
+		if(fabs(theta_d) < .001){theta_d = .001;}
 
 		//motion model including addition of random measurement noise
 		particles[i].x = x + (v/theta_d)*(sin(theta + (theta_d*dt))-sin(theta)) + dist_x(gen);
