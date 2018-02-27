@@ -202,15 +202,18 @@ void ParticleFilter::resample() {
 
 	//resample according to weights
 	random_device rd; 
-	mt19937 gen(rd());
+	mt19937 random_generator(rd());
 	discrete_distribution<> d(allTheWeightsList.begin(), allTheWeightsList.end());
 
+	vector<Particle> new_particles(num_particles);
 	for (int p = 0; p<particles.size(); p++){
 		int resampleID = d(gen);
-		particles[p].x = particles[resampleID].x;
-		particles[p].y = particles[resampleID].y;
-		particles[p].theta = particles[resampleID].theta;
+		new_particles[p].x = particles[resampleID].x;
+		new_particles[p].y = particles[resampleID].y;
+		new_particles[p].theta = particles[resampleID].theta;
 	}
+
+	particles = move(new_particles);
 
 }
 
