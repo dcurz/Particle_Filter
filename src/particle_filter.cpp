@@ -207,7 +207,7 @@ void ParticleFilter::resample() {
 
 	vector<Particle> new_particles(num_particles);
 	for (int p = 0; p<particles.size(); p++){
-		int resampleID = d(gen);
+		int resampleID = d(random_generator);
 		new_particles[p].x = particles[resampleID].x;
 		new_particles[p].y = particles[resampleID].y;
 		new_particles[p].theta = particles[resampleID].theta;
